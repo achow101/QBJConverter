@@ -9,7 +9,7 @@ Using QBJConverter requires basic knowledge of the command line and for now only
 3. Shift + Right click the Windows Explorer window in the folder with QBJConverter.exe in it and select "Open a command window here".
 4. Use the following command to run the program
 
-	QBJConverter <filename>
+    ```QBJConverter <filename>```
 
 See Usage for more instructions	
 	
@@ -17,5 +17,5 @@ See Usage for more instructions
 
 The usage of the program is as follows
 
-	QBJConverter <filename>
+    QBJConverter <filename>
     <filename>: Location of QBJ file
