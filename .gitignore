@@ -2,3 +2,6 @@
 
 *.qbj
 *.sqbs
+
+Debug
+Release

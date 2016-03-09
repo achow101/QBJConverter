@@ -37,11 +37,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Stuff for tracking objects for SQBS
-    int schoolCount = 0;
-    vector<vector<string>> schools;
+    int teamCount = 0;
+    vector<vector<string>> teams;
     vector<string> teamIds;
 
-    // Grab schools
+    // Grab teams
     Json::Value objects = root.get("objects", "none");
     for(int i = 0; i < objects.size(); i++)
     {
@@ -50,17 +50,24 @@ int main(int argc, char *argv[]) {
         string id = idObj.asString();
         if(id.find("school") != string::npos)
         {
-            schoolCount++;
-
-            Json::Value players = obj.get("teams", "none").get(ZERO , "none").get("players", "none");
-            vector<string> school;
-            school.push_back(obj.get("name", "none").asString());
-            for(int j = 0; j < players.size(); j++)
+            Json::Value teamsObj = obj.get("teams", "none");
+            for(int j = 0; j < teamsObj.size(); j++)
             {
-                school.push_back(players.get(j, "none").get("name", "none").asString());
+                teamCount++;
+
+                Json::Value teamObj = teamsObj.get(j, "none");
+
+                Json::Value players = teamObj.get("players", "none");
+                vector<string> team;
+                team.push_back(teamObj.get("name", "none").asString());
+                for(int j = 0; j < players.size(); j++)
+                {
+                    team.push_back(players.get(j, "none").get("name", "none").asString());
+                }
+                teams.push_back(team);
+                teamIds.push_back(teamObj.get("id", "none").asString());
             }
-            schools.push_back(school);
-            teamIds.push_back(obj.get("teams", "none").get(ZERO, "none").get("id", "none").asString());
+
         }
     }
 
@@ -69,14 +76,14 @@ int main(int argc, char *argv[]) {
     sqbsFile.open (qbjFile + ".sqbs");
 
     // Write number of teams to file
-    sqbsFile << schoolCount << "\r\n";
+    sqbsFile << teamCount << "\r\n";
 
     // Write players to file
-    for (int k = 0; k < schools.size(); ++k) {
-        vector<string> school = schools.at(k);
-        sqbsFile << school.size() << "\r\n";
-        for (int i = 0; i < school.size(); ++i) {
-            sqbsFile << school.at(i) << "\r\n";
+    for (int k = 0; k < teams.size(); ++k) {
+        vector<string> team = teams.at(k);
+        sqbsFile << team.size() << "\r\n";
+        for (int i = 0; i < team.size(); ++i) {
+            sqbsFile << team.at(i) << "\r\n";
         }
     }
 
@@ -148,7 +155,7 @@ int main(int argc, char *argv[]) {
 
                         string playerName = teamPlayers.get(l, "none").get("player", "none").get("name", "none").asString();
                         // Find player index
-                        vector<string> team = schools.at(teamInx);
+                        vector<string> team = teams.at(teamInx);
                         for (int k = 0; k < team.size(); ++k) {
                             if (team.at(k).find(playerName) != string::npos)
                                 playerStat.push_back(k - 1);
@@ -251,8 +258,8 @@ int main(int argc, char *argv[]) {
 
     // Write division stuff which is not in the qbj file
     sqbsFile << 0 << "\r\n";
-    sqbsFile << schoolCount << "\r\n";
-    for (int i1 = 0; i1 < schoolCount; ++i1) {
+    sqbsFile << teamCount << "\r\n";
+    for (int i1 = 0; i1 < teamCount; ++i1) {
         sqbsFile << -1 << "\r\n";
     }
 
@@ -260,8 +267,8 @@ int main(int argc, char *argv[]) {
     sqbsFile << power << "\r\n" << base << "\r\n" << neg << "\r\n0\r\n0\r\n";
 
     // Numbers at end I don't understand
-    sqbsFile << schoolCount << "\r\n";
-    for (int i1 = 0; i1 < schoolCount; ++i1) {
+    sqbsFile << teamCount << "\r\n";
+    for (int i1 = 0; i1 < teamCount; ++i1) {
         sqbsFile << 0 << "\r\n";
     }
 
