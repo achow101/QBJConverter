@@ -6,6 +6,15 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
+    string helpMessage = "Usage: QBJConverter <filename>\n"
+                        "<filename>: The path to the .qbj file";
+
+    if(argc != 2)
+    {
+        cout << helpMessage << endl;
+        return -1;
+    }
+
     string qbjFile = argv[1];
     Json::ArrayIndex ZERO = 0;
     int power = 15;
